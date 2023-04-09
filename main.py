@@ -17,6 +17,7 @@ right_current = right_initial
 output_current: [str] = [] # gonna keep this as a character array to allow for pushing
 mode_select: bool = True # if true, show initial screen before left and right initial: either delete current word or make new one
 AUTO_COMPLETE_CONFIDENCE = 0.5
+saved_words: [str] = [] # words to be saved and then loaded from for autocomplete
 
 # load autocomplete nonsense
 nstubtree = None
@@ -31,7 +32,7 @@ def display_output():
     global mode_select
     # global auto_complete_suggestion
     # attempt an autocomplete
-    autocompleted = predict(typing_area.cget('text'),nstubtree,0.5)
+    autocompleted = predict(typing_area.cget('text'),nstubtree,AUTO_COMPLETE_CONFIDENCE)
     print(f"Autocompleted: {autocompleted}?")
     if len(autocompleted) > 1:
         typing_area.config(text=''.join(autocompleted))
@@ -58,6 +59,9 @@ def do_click(event):
             char_canvas.create_text(75, 75, text=f'{left_current[0]}-{left_current[-1]}')
             char_canvas.create_text(225, 75, text=f'{right_current[0]}-{right_current[-1]}')
         else:
+            # also save the word, if not already
+            if len(typing_area.cget("text")) > 0:
+                saved_words.append(typing_area.cget("text"))
             typing_area.config(text='')
             output_current = []
     else:
@@ -113,6 +117,14 @@ char_canvas.bind('<Button-1>', do_click)
 
 auto_complete_suggestion = tk.Label(main_frame, text=f"Autocomplete: {AUTO_COMPLETE_CONFIDENCE}").grid(row=2, column=0)
 
+def on_close():
+    print("Dumping saved words for autocomplete")
+    print(saved_words)
+    with open('./saved_words.pkl', 'wb') as file:
+        pickle.dump(saved_words, file)
+        root.destroy()
+
+root.protocol("WM_DELETE_WINDOW", on_close)
 # canvas.pack()
 main_frame.pack()
 main_frame.mainloop()

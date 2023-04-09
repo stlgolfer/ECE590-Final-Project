@@ -11,9 +11,10 @@ from english_words import get_english_words_set
 
 
 # words = get_english_words_set(['web2'], lower=True)
-
 # going to try and make my own statistical model
-words = ['yuh', 'dank', 'yuhboi'] # given at least first two characters
+# need to load in any extra words in saved_words, if available
+to_append = pickle.load(open('./saved_words.pkl', 'rb'))
+words = ['yuh', 'dank', 'yuhboi'] + to_append # given at least first two characters
 
 # keys will be the number of characters available, the tree will have the words with associated probabilities
 nstubtree = {}
@@ -60,4 +61,4 @@ def predict(stem: str, tree: dict, thresh: float) -> str:
         # there's a key for it
         return predictn(stem, tree[len(stem)], thresh)
 
-print(predict('yuhb', nstubtree, 0.5))
+# print(predict('yuhb', nstubtree, 0.5))
