@@ -1,4 +1,6 @@
+import pickle
 import tkinter as tk
+from autocomplete import predict
 
 def bifurcate(arr):
     split = int(len(arr) / 2)
@@ -14,9 +16,23 @@ left_current = left_initial
 right_current = right_initial
 output_current: [str] = [] # gonna keep this as a character array to allow for pushing
 
+# load autocomplete nonsense
+nstubtree = None
+with open('./autocomplete.pkl', 'rb') as f:
+    nstubtree = pickle.load(f)
+print(nstubtree)
 def display_output():
     global output_current
     typing_area.config(text = ''.join(output_current))
+
+    global nstubtree
+    # global auto_complete_suggestion
+    # attempt an autocomplete
+    autocompleted = predict(typing_area.cget('text'),nstubtree,0.5)
+    print(f"Autocompleted: {autocompleted}?")
+    if len(autocompleted) > 1:
+        typing_area.config(text=''.join(autocompleted))
+
 
 def do_click(event):
     global left_current
@@ -66,10 +82,12 @@ char_canvas.create_text(225,75,text=f'{right_current[0]}-{right_current[-1]}')
 char_canvas.grid(row=1,column=0)
 char_canvas.bind('<Button-1>', do_click)
 
-ws_canvas = tk.Canvas(main_frame, bg="white", height=150, width=300)
-ws_canvas.create_rectangle(0, 0, 50, 50)
-ws_canvas.create_line(150,0,150,150)
-ws_canvas.grid(row=2,column=0)
+# ws_canvas = tk.Canvas(main_frame, bg="white", height=150, width=300)
+# ws_canvas.create_rectangle(0, 0, 50, 50)
+# ws_canvas.create_line(150,0,150,150)
+# ws_canvas.grid(row=2,column=0)
+
+auto_complete_suggestion = tk.Label(main_frame, text="Autocomplete: ").grid(row=2, column=0)
 
 # canvas.pack()
 main_frame.pack()

@@ -34,10 +34,10 @@ for sl in range(2,MAX_STEM_LENGTH+1):
     nstubtree[sl] = tree
 
 print(nstubtree)
-# with open('./tree.pkl', 'wb') as f:
-#     pickle.dump(tree, f)
+with open('./autocomplete.pkl', 'wb') as f:
+    pickle.dump(nstubtree, f)
 
-def predict2(stem: str, tree: dict, threshold: float) -> str:
+def predictn(stem: str, tree: dict, threshold: float) -> str:
     if stem not in tree:
         return ([], float(0.0))
     # for now just print the options
@@ -53,4 +53,11 @@ def predict2(stem: str, tree: dict, threshold: float) -> str:
             return stem + candidate
     return '' # didn't find one :(
 
-print(predict2('yu', nstubtree[2], 0.5))
+def predict(stem: str, tree: dict, thresh: float) -> str:
+    if len(stem) not in tree:
+        return ''
+    else:
+        # there's a key for it
+        return predictn(stem, tree[len(stem)], thresh)
+
+print(predict('yuhb', nstubtree, 0.5))
