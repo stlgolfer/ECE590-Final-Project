@@ -1,0 +1,56 @@
+import numpy as np
+import tensorflow as tf
+from keras import layers
+from keras.models import Model, load_model
+# from keras.utils import plot_model
+import matplotlib.pyplot as plt
+from convokit import Corpus, download, download_local
+import pickle
+from collections import Counter
+from english_words import get_english_words_set
+
+
+# words = get_english_words_set(['web2'], lower=True)
+
+# going to try and make my own statistical model
+words = ['yuh', 'dank', 'yuhboi'] # given at least first two characters
+
+# keys will be the number of characters available, the tree will have the words with associated probabilities
+nstubtree = {}
+
+MAX_STEM_LENGTH = 3
+for sl in range(2,MAX_STEM_LENGTH+1):
+    words_cleaned = [len(x) <= sl + 1 for x in words]
+    tree = {} # will have a key with first two characters, then it will iterate through the rest of the words and append any endings it finds
+
+    # reject all words that have length less than or equal to 3
+    for wi in words:
+        key = wi[0:sl]
+        if key not in tree:
+            tree[key] = [wi[sl:]] # add its ending
+        else:
+            # append it's ending
+            tree[key].append(wi[sl:])
+    nstubtree[sl] = tree
+
+print(nstubtree)
+# with open('./tree.pkl', 'wb') as f:
+#     pickle.dump(tree, f)
+
+def predict2(stem: str, tree: dict, threshold: float) -> str:
+    if stem not in tree:
+        return ([], float(0.0))
+    # for now just print the options
+    counted = Counter(tree[stem])
+    print(counted)
+    # we now have the counts, so just normalize against the total
+    for k in counted.keys():
+        counted[k] = counted[k]/len(counted.values())
+    print(counted)
+    # now only return an autocompleted word that meets the criteria. select the first one that 'comes to mind'
+    for candidate in counted.keys():
+        if counted[candidate] >= threshold:
+            return stem + candidate
+    return '' # didn't find one :(
+
+print(predict2('yu', nstubtree[2], 0.5))

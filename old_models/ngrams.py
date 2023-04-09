@@ -23,11 +23,11 @@ import pickle
 # medium_data.head()
 
 model = None
-print(len(os.listdir('./model_trained')))
+print(len(os.listdir('../model_trained')))
 # make and train the model
 # will need to do a bit of preprocessing to connect cornell db to regular db
 corpus = Corpus(download('movie-corpus'))
-df = corpus.get_utterances_dataframe().iloc[0:100, :] # gotta make this smaller somehow ig
+df = corpus.get_utterances_dataframe().iloc[0:7000, :] # gotta make this smaller somehow ig
 key = 'text'
 
 
@@ -66,7 +66,7 @@ input_sequences = np.array(pad_sequences(input_sequences, maxlen=max_sequence_le
 input_sequences[1]
 
 # need to cache input_sequences and the tokenizer to speed up load times
-with open('./tokenizer.pkl', 'wb') as f:
+with open('tokenizer.pkl', 'wb') as f:
     pickle.dump({'tokenizer': tokenizer, 'max_sequence_len': max_sequence_len}, f)
 
 xs, labels = input_sequences[:,:-1],input_sequences[:,-1]
@@ -81,7 +81,7 @@ model.add(Bidirectional(LSTM(150)))
 model.add(Dense(total_words, activation='softmax'))
 adam = Adam(lr=0.01)
 model.compile(loss='categorical_crossentropy', optimizer=adam, metrics=['accuracy'])
-history = model.fit(xs, ys, epochs=1, verbose=1)
+history = model.fit(xs, ys, epochs=50, verbose=1)
 #print model.summary()
 print(model)
 model.save('./model_trained')

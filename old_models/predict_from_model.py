@@ -47,14 +47,14 @@ from convokit import Corpus, download, download_local
 # max_sequence_len = max([len(x) for x in input_sequences])
 
 # load meta from pickle file
-with open('./tokenizer.pkl', 'rb') as fp:
+with open('tokenizer.pkl', 'rb') as fp:
     meta = dict(pickle.load(fp))
     tokenizer = meta['tokenizer']
     max_sequence_len = meta['max_sequence_len']
 
 def find_next_word(seed_text, next_words):
     # actually load the model
-    model = keras.models.load_model('./model_trained')
+    model = keras.models.load_model('../model_trained')
 
     for _ in range(next_words):
         token_list = tokenizer.texts_to_sequences([seed_text])[0]
@@ -70,5 +70,3 @@ def find_next_word(seed_text, next_words):
                 break
         seed_text += " " + output_word
     print(seed_text)
-
-print(find_next_word('hello', 1))
