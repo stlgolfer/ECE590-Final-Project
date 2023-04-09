@@ -39,7 +39,7 @@ with open('./autocomplete.pkl', 'wb') as f:
 
 def predictn(stem: str, tree: dict, threshold: float) -> str:
     if stem not in tree:
-        return ([], float(0.0))
+        return ''
     # for now just print the options
     counted = Counter(tree[stem])
     print(counted)
