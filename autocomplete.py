@@ -9,12 +9,9 @@ import pickle
 from collections import Counter
 from english_words import get_english_words_set
 
-
-# words = get_english_words_set(['web2'], lower=True)
-# going to try and make my own statistical model
 # need to load in any extra words in saved_words, if available
 to_append = pickle.load(open('./saved_words.pkl', 'rb'))
-words = ['yuh', 'dank', 'yuhboi'] + to_append # given at least first two characters
+words = ['hello'] # given at least first two characters
 
 # keys will be the number of characters available, the tree will have the words with associated probabilities
 nstubtree = {}
@@ -52,7 +49,7 @@ def predictn(stem: str, tree: dict, threshold: float) -> str:
     for candidate in counted.keys():
         if counted[candidate] >= threshold:
             return stem + candidate
-    return '' # didn't find one :(
+    return '' # didn't find one
 
 def predict(stem: str, tree: dict, thresh: float) -> str:
     if len(stem) not in tree:
@@ -60,5 +57,3 @@ def predict(stem: str, tree: dict, thresh: float) -> str:
     else:
         # there's a key for it
         return predictn(stem, tree[len(stem)], thresh)
-
-# print(predict('yuhb', nstubtree, 0.5))

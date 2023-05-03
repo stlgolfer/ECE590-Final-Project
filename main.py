@@ -14,12 +14,12 @@ right_initial = ['n','o','p','q','r','s','t','u','v','w','x','y','z']
 
 left_current = left_initial
 right_current = right_initial
-output_current: [str] = [] # gonna keep this as a character array to allow for pushing
+output_current: [str] = [] # keep this as a character array to allow for pushing
 mode_select: bool = True # if true, show initial screen before left and right initial: either delete current word or make new one
 AUTO_COMPLETE_CONFIDENCE = 0.5
 saved_words: [str] = [] # words to be saved and then loaded from for autocomplete
 
-# load autocomplete nonsense
+# load autocomplete
 nstubtree = None
 with open('./autocomplete.pkl', 'rb') as f:
     nstubtree = pickle.load(f)
@@ -95,7 +95,7 @@ def do_click(event):
 
 main_frame = tk.Frame(root, width=300, height=300)
 
-# so first thing to do is to have the typing area and then two canvas sections
+# first thing to do is to have the typing area and then two canvas sections
 # need a canvas because we'll need to control
 text_frame = tk.Frame(main_frame, width=300,height=50).grid(row=0,column=0)
 typing_area = tk.Label(text_frame, text="Word Select 3000")
@@ -109,11 +109,6 @@ char_canvas.create_text(75,75,text='Clear word')
 char_canvas.create_text(225,75,text='New word')
 char_canvas.grid(row=1,column=0)
 char_canvas.bind('<Button-1>', do_click)
-
-# ws_canvas = tk.Canvas(main_frame, bg="white", height=150, width=300)
-# ws_canvas.create_rectangle(0, 0, 50, 50)
-# ws_canvas.create_line(150,0,150,150)
-# ws_canvas.grid(row=2,column=0)
 
 auto_complete_suggestion = tk.Label(main_frame, text=f"Autocomplete: {AUTO_COMPLETE_CONFIDENCE}").grid(row=2, column=0)
 
